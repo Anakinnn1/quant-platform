@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Set-Location C:\\\\dev\\\\quant-platform; Get-ChildItem -Recurse -Exclude node_modules,dist,.next,pnpm-lock.yaml | Where-Object { -not $_.FullName.Contains\\('\\\\node_modules\\\\'\\) -and -not $_.FullName.Contains\\('\\\\.pnpm\\\\'\\) } | Select-Object FullName | ForEach-Object { $_.FullName.Replace\\('C:\\\\dev\\\\quant-platform\\\\', ''\\) } | Sort-Object)"
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@quant/worker",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/main.js",
+    "dev": "ts-node -r tsconfig-paths/register src/main.ts"
+  }
+}

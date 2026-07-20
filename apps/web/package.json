@@ -1,0 +1,10 @@
+{
+  "name": "@quant/web",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "next build",
+    "typecheck": "tsc --noEmit",
+    "dev": "next dev",
+    "start": "next start"
+  }
+}

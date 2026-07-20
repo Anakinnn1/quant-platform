@@ -1,0 +1,184 @@
+// packages/shared/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  passwordHash  String
+  role          Role     @default(USER)
+  createdAt     DateTime @default(now())
+  refreshTokens RefreshToken[]
+  exchangeKeys  ExchangeKey[]
+  strategies    Strategy[]
+  trades        Trade[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  tokenHash String
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+}
+
+model ExchangeKey {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  label         String
+  apiKeyEnc     String   // AES-256-GCM ciphertext, see §11
+  apiSecretEnc  String
+  // keyVersion enables rotation without a big-bang migration (§11)
+  keyVersion    Int      @default(1)
+  isTestnet     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+}
+
+model Symbol {
+  id       String @id @default(uuid())
+  ticker   String @unique // e.g. BTCUSDT
+  base     String
+  quote    String
+  isActive Boolean @default(true)
+  ohlcvs   OHLCV[]
+}
+
+model OHLCV {
+  id        String   @id @default(uuid())
+  symbolId  String
+  symbol    Symbol   @relation(fields: [symbolId], references: [id])
+  interval  String   // 1m, 5m, 1h, 1d
+  openTime  DateTime
+  open      Decimal
+  high      Decimal
+  low       Decimal
+  close     Decimal
+  volume    Decimal
+
+  @@unique([symbolId, interval, openTime])
+  @@index([symbolId, interval, openTime])
+}
+
+model Strategy {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  name          String
+  aiProvider    String   // "openai" | "anthropic" | "gemini" | "openrouter:kimi"
+  symbolIds     String[]
+  riskProfileId String
+  riskProfile   RiskProfile @relation(fields: [riskProfileId], references: [id])
+  isActive      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  aiDecisions   AIDecision[]
+  trades        Trade[]
+  backtests     Backtest[]
+}
+
+model RiskProfile {
+  id                      String  @id @default(uuid())
+  name                    String
+  maxPositionSizeUsd      Decimal
+  maxDailyLossUsd         Decimal
+  maxDrawdownPct          Decimal
+  maxOpenTrades           Int
+  cooldownMinutesAfterLoss Int
+  strategies              Strategy[]
+}
+
+model AIDecision {
+  id          String   @id @default(uuid())
+  strategyId  String
+  strategy    Strategy @relation(fields: [strategyId], references: [id])
+  symbolId    String
+  provider    String
+  signal      String   // BUY | SELL | HOLD
+  confidence  Int
+  reasoning   String
+  riskLevel   String
+  stopLoss    Decimal?
+  takeProfit  Decimal?
+  rawResponse Json     // full provider response for audit
+  createdAt   DateTime @default(now())
+  riskEvaluation RiskEvaluation?
+  resultingTrade Trade?
+}
+
+model RiskEvaluation {
+  id           String     @id @default(uuid())
+  aiDecisionId String     @unique
+  aiDecision   AIDecision @relation(fields: [aiDecisionId], references: [id])
+  approved     Boolean
+  reasons      String[]
+  evaluatedAt  DateTime   @default(now())
+}
+
+model Trade {
+  id           String      @id @default(uuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id])
+  strategyId   String
+  strategy     Strategy    @relation(fields: [strategyId], references: [id])
+  aiDecisionId String?     @unique
+  aiDecision   AIDecision? @relation(fields: [aiDecisionId], references: [id])
+  symbolId     String
+  side         String      // LONG | SHORT
+  entryPrice   Decimal
+  exitPrice    Decimal?
+  quantity     Decimal
+  stopLoss     Decimal?
+  takeProfit   Decimal?
+  status       TradeStatus @default(OPEN)
+  pnl          Decimal?
+  openedAt     DateTime    @default(now())
+  closedAt     DateTime?
+}
+
+enum TradeStatus {
+  OPEN
+  CLOSED
+  STOPPED_OUT
+  TAKE_PROFIT_HIT
+}
+
+model Backtest {
+  id           String   @id @default(uuid())
+  strategyId   String
+  strategy     Strategy @relation(fields: [strategyId], references: [id])
+  fromDate     DateTime
+  toDate       DateTime
+  status       String   // QUEUED | RUNNING | DONE | FAILED
+  winRate      Decimal?
+  profitFactor Decimal?
+  sharpeRatio  Decimal?
+  maxDrawdown  Decimal?
+  equityCurve  Json?
+  tradeList    Json?
+  createdAt    DateTime @default(now())
+  completedAt  DateTime?
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  actorType String   // USER | AI | SYSTEM
+  actorId   String?
+  action    String
+  entity    String
+  entityId  String
+  metadata  Json?
+  createdAt DateTime @default(now())
+}

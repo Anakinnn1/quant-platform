@@ -1,0 +1,15 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/shared" },
+    { "path": "packages/exchange" },
+    { "path": "packages/ai-engine" },
+    { "path": "packages/indicators" },
+    { "path": "packages/backtester" },
+    { "path": "packages/risk" },
+    { "path": "packages/ui" },
+    { "path": "apps/api" },
+    { "path": "apps/worker" },
+    { "path": "apps/web" }
+  ]
+}

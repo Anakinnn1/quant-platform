@@ -1,0 +1,20 @@
+{
+  "name": "quant-platform",
+  "private": true,
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "pnpm -r --parallel typecheck",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:generate": "pnpm --filter @quant/shared db:generate",
+    "db:migrate": "pnpm --filter @quant/shared db:migrate",
+    "db:push": "pnpm --filter @quant/shared db:push"
+  },
+  "devDependencies": {
+    "eslint": "^9.10.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.8.0"
+  }
+}

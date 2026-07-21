@@ -3,7 +3,7 @@ import { nextBackoff, initialBackoff } from './backoff';
 import type { BinanceKlineTick } from './types';
 
 // Testnet-only: URL is a constant, not a parameter.
-const WS_BASE = 'wss://testnet.binance.vision/ws' as const;
+const WS_BASE = 'wss://stream.testnet.binance.vision:9443/ws' as const;
 
 type OnTick = (k: BinanceKlineTick) => void | Promise<void>;
 type OnReconnect = () => void | Promise<void>;
@@ -13,8 +13,18 @@ interface Subscription {
   closed: boolean;
 }
 
+interface WsLogger {
+  log(msg: string): void;
+  error(msg: string): void;
+}
+
 export class BinanceTestnetWsManager {
   private subs = new Map<string, Subscription>();
+  private readonly logger: WsLogger;
+
+  constructor(logger?: WsLogger) {
+    this.logger = logger ?? console;
+  }
 
   subscribeKline(
     symbol: string,
@@ -34,7 +44,7 @@ export class BinanceTestnetWsManager {
 
       ws.on('open', () => {
         backoffMs = initialBackoff(); // reset on clean connect
-        console.log(`[WS] connected ${key}`);
+        this.logger.log(`[WS] connected ${key}`);
       });
 
       ws.on('message', (data) => {
@@ -47,7 +57,7 @@ export class BinanceTestnetWsManager {
       });
 
       ws.on('error', (err) => {
-        console.error(`[WS] error ${key}: ${err.message}`);
+        this.logger.error(`[WS] error ${key}: ${err.message}`);
       });
 
       ws.on('close', () => {
@@ -56,7 +66,7 @@ export class BinanceTestnetWsManager {
 
         const delay = backoffMs;
         backoffMs = nextBackoff(backoffMs);
-        console.log(`[WS] disconnected ${key}, reconnecting in ${Math.round(delay)}ms`);
+        this.logger.log(`[WS] disconnected ${key}, reconnecting in ${Math.round(delay)}ms`);
 
         setTimeout(() => {
           // Fire-and-forget backfill; connect immediately regardless of backfill outcome.

@@ -24,7 +24,7 @@ export class IngestionService implements OnModuleInit, OnModuleDestroy {
 
   async onModuleInit() {
     this.redis = new Redis(this.config.get<string>('REDIS_URL', 'redis://localhost:6379'));
-    this.wsManager = new BinanceTestnetWsManager();
+    this.wsManager = new BinanceTestnetWsManager(this.logger);
 
     await this.seedSymbols();
 

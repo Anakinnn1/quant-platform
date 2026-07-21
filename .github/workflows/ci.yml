@@ -17,7 +17,7 @@ jobs:
           version: 11
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: '22'
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm format:check
@@ -32,7 +32,7 @@ jobs:
           version: 11
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: '22'
       - run: pnpm install --frozen-lockfile
       - run: pnpm db:generate
       - run: pnpm --filter @quant/exchange build
@@ -68,7 +68,7 @@ jobs:
           version: 11
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: '22'
       - run: pnpm install --frozen-lockfile
       - run: pnpm db:generate
       - run: pnpm --filter @quant/shared db:push
@@ -86,6 +86,6 @@ jobs:
           version: 11
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: '22'
       - run: pnpm install --frozen-lockfile
       - run: pnpm audit

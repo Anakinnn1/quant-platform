@@ -52,6 +52,7 @@ describe('Auth + Users (e2e)', () => {
   });
 
   beforeEach(async () => {
+    await prisma.exchangeKey.deleteMany();
     await prisma.refreshToken.deleteMany();
     await prisma.user.deleteMany();
   });

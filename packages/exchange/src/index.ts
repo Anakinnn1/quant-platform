@@ -1,2 +1,3 @@
-// Phase 2: Binance Testnet REST + WS client, reconnect logic, testnet-only guard.
-export {};
+export { BinanceTestnetClient } from './testnet-client.js';
+export { BinanceTestnetWsManager } from './ws-manager.js';
+export type { BinanceKlineTick, PriceTick } from './types.js';

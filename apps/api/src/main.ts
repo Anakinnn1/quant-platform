@@ -9,7 +9,8 @@ import { requestIdMiddleware } from './common/middleware/request-id.middleware';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.use(helmet());
+  app.enableCors({ origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000' });
+  app.use(helmet({ contentSecurityPolicy: false })); // CSP off — SSE connect-src needs flexibility in dev
   app.use(requestIdMiddleware);
   app.setGlobalPrefix('api/v1');
 

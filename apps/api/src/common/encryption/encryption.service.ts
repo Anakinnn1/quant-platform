@@ -22,15 +22,8 @@ export class EncryptionService {
 
   decrypt(encrypted: string): string {
     const [ivHex, ctHex, tagHex] = encrypted.split(':');
-    const decipher = createDecipheriv(
-      'aes-256-gcm',
-      this.key,
-      Buffer.from(ivHex, 'hex'),
-    );
+    const decipher = createDecipheriv('aes-256-gcm', this.key, Buffer.from(ivHex, 'hex'));
     decipher.setAuthTag(Buffer.from(tagHex, 'hex'));
-    return (
-      decipher.update(Buffer.from(ctHex, 'hex')).toString('utf8') +
-      decipher.final('utf8')
-    );
+    return decipher.update(Buffer.from(ctHex, 'hex')).toString('utf8') + decipher.final('utf8');
   }
 }

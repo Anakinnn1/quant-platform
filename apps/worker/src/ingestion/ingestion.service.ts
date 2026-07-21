@@ -88,9 +88,7 @@ export class IngestionService implements OnModuleInit, OnModuleDestroy {
     });
 
     // Default: last 24 h of candles on first run.
-    const startTime = last
-      ? last.openTime.getTime() + 1
-      : Date.now() - 24 * 60 * 60 * 1000;
+    const startTime = last ? last.openTime.getTime() + 1 : Date.now() - 24 * 60 * 60 * 1000;
 
     let klines: BinanceKlineTick[];
     try {

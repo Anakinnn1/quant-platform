@@ -23,7 +23,12 @@ describe('Auth + Users (e2e)', () => {
     const module = await Test.createTestingModule({ imports: [AppModule] })
       .overrideProvider(ThrottlerStorage)
       .useValue({
-        increment: async () => ({ totalHits: 1, timeToExpire: 60_000, isBlocked: false, timeToBlockExpire: 0 }),
+        increment: async () => ({
+          totalHits: 1,
+          timeToExpire: 60_000,
+          isBlocked: false,
+          timeToBlockExpire: 0,
+        }),
       })
       .compile();
     app = module.createNestApplication();

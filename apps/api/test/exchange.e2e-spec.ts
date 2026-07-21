@@ -28,7 +28,14 @@ describe('Exchange Keys (e2e)', () => {
   beforeAll(async () => {
     const module = await Test.createTestingModule({ imports: [AppModule] })
       .overrideProvider(ThrottlerStorage)
-      .useValue({ increment: async () => ({ totalHits: 1, timeToExpire: 60_000, isBlocked: false, timeToBlockExpire: 0 }) })
+      .useValue({
+        increment: async () => ({
+          totalHits: 1,
+          timeToExpire: 60_000,
+          isBlocked: false,
+          timeToBlockExpire: 0,
+        }),
+      })
       .overrideProvider(BINANCE_CLIENT)
       .useValue(mockBinance)
       .compile();
@@ -95,7 +102,11 @@ describe('Exchange Keys (e2e)', () => {
       const res = await request(server)
         .post('/api/v1/users/me/exchange-keys')
         .set('Authorization', `Bearer ${accessToken}`)
-        .send({ label: 'My Testnet Key', apiKey: 'fake-api-key-12345', apiSecret: 'fake-api-secret-12345' });
+        .send({
+          label: 'My Testnet Key',
+          apiKey: 'fake-api-key-12345',
+          apiSecret: 'fake-api-secret-12345',
+        });
 
       expect(res.status).toBe(201);
       expect(res.body.id).toBeDefined();

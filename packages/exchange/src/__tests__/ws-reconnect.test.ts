@@ -1,7 +1,11 @@
 import EventEmitter from 'events';
 
 // Capture the WebSocket constructor so tests can control events.
-let mockWsInstance: EventEmitter & { readyState: number; removeAllListeners: jest.Mock; close: jest.Mock };
+let mockWsInstance: EventEmitter & {
+  readyState: number;
+  removeAllListeners: jest.Mock;
+  close: jest.Mock;
+};
 const MockWebSocket = jest.fn().mockImplementation(() => {
   mockWsInstance = Object.assign(new EventEmitter(), {
     readyState: 1,
@@ -30,7 +34,18 @@ describe('BinanceTestnetWsManager reconnect', () => {
     const onTick = jest.fn();
     manager.subscribeKline('BTCUSDT', '1m', onTick);
 
-    const kline = { t: 1, T: 2, s: 'BTCUSDT', i: '1m', o: '100', h: '110', l: '90', c: '105', v: '500', x: false };
+    const kline = {
+      t: 1,
+      T: 2,
+      s: 'BTCUSDT',
+      i: '1m',
+      o: '100',
+      h: '110',
+      l: '90',
+      c: '105',
+      v: '500',
+      x: false,
+    };
     mockWsInstance.emit('message', JSON.stringify({ k: kline }));
 
     expect(onTick).toHaveBeenCalledWith(kline);

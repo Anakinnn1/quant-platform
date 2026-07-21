@@ -18,7 +18,14 @@ describe('MarketData (e2e)', () => {
   beforeAll(async () => {
     const module = await Test.createTestingModule({ imports: [AppModule] })
       .overrideProvider(ThrottlerStorage)
-      .useValue({ increment: async () => ({ totalHits: 1, timeToExpire: 60_000, isBlocked: false, timeToBlockExpire: 0 }) })
+      .useValue({
+        increment: async () => ({
+          totalHits: 1,
+          timeToExpire: 60_000,
+          isBlocked: false,
+          timeToBlockExpire: 0,
+        }),
+      })
       .overrideProvider(BINANCE_CLIENT)
       .useValue({ getAccountBalance: jest.fn(), getKlines: jest.fn().mockResolvedValue([]) })
       .compile();
@@ -121,7 +128,12 @@ describe('MarketData (e2e)', () => {
 
       const page2 = await request(server)
         .get('/api/v1/market-data/ohlcv')
-        .query({ symbol: 'TESTUSDT', interval: '1m', limit: 2, cursor: page1.body.nextCursor as string });
+        .query({
+          symbol: 'TESTUSDT',
+          interval: '1m',
+          limit: 2,
+          cursor: page1.body.nextCursor as string,
+        });
 
       expect(page2.status).toBe(200);
       expect(page2.body.data).toHaveLength(2);
@@ -133,14 +145,12 @@ describe('MarketData (e2e)', () => {
     });
 
     it('filters by from/to date range', async () => {
-      const res = await request(server)
-        .get('/api/v1/market-data/ohlcv')
-        .query({
-          symbol: 'TESTUSDT',
-          interval: '1m',
-          from: '2026-01-01T00:01:00Z',
-          to: '2026-01-01T00:03:00Z',
-        });
+      const res = await request(server).get('/api/v1/market-data/ohlcv').query({
+        symbol: 'TESTUSDT',
+        interval: '1m',
+        from: '2026-01-01T00:01:00Z',
+        to: '2026-01-01T00:03:00Z',
+      });
 
       expect(res.status).toBe(200);
       // Only candles within the range (minutes 1, 2, 3)
@@ -178,7 +188,9 @@ describe('MarketData (e2e)', () => {
         volume: '500',
       };
 
-      const where = { symbolId_interval_openTime: { symbolId, interval: '1m', openTime: candle.openTime } };
+      const where = {
+        symbolId_interval_openTime: { symbolId, interval: '1m', openTime: candle.openTime },
+      };
       await prisma.oHLCV.upsert({ where, create: candle, update: candle });
       await prisma.oHLCV.upsert({ where, create: candle, update: { close: '208' } });
 

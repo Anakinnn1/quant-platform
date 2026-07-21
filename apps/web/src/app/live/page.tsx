@@ -24,7 +24,9 @@ function useLivePrice(symbol: string) {
       try {
         setTick(JSON.parse((e as MessageEvent).data) as Tick);
         setStatus('connected');
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
     });
 
     es.onerror = () => setStatus('error');
@@ -38,27 +40,38 @@ function useLivePrice(symbol: string) {
 function PriceCard({ symbol }: { symbol: string }) {
   const { tick, status } = useLivePrice(symbol);
 
-  const dot =
-    status === 'connected' ? '#22c55e'
-    : status === 'error' ? '#ef4444'
-    : '#f59e0b';
+  const dot = status === 'connected' ? '#22c55e' : status === 'error' ? '#ef4444' : '#f59e0b';
 
   return (
-    <div style={{
-      background: '#1a1a2e',
-      border: '1px solid #2d2d4e',
-      borderRadius: 12,
-      padding: '24px 32px',
-      minWidth: 260,
-    }}>
+    <div
+      style={{
+        background: '#1a1a2e',
+        border: '1px solid #2d2d4e',
+        borderRadius: 12,
+        padding: '24px 32px',
+        minWidth: 260,
+      }}
+    >
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-        <span style={{ width: 8, height: 8, borderRadius: '50%', background: dot, display: 'inline-block' }} />
-        <span style={{ fontSize: 13, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1 }}>
+        <span
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: '50%',
+            background: dot,
+            display: 'inline-block',
+          }}
+        />
+        <span
+          style={{ fontSize: 13, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1 }}
+        >
           {symbol}
         </span>
       </div>
       <div style={{ fontSize: 40, fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>
-        {tick ? `$${parseFloat(tick.price).toLocaleString('en-US', { minimumFractionDigits: 2 })}` : '—'}
+        {tick
+          ? `$${parseFloat(tick.price).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+          : '—'}
       </div>
       {tick && (
         <div style={{ fontSize: 11, color: '#475569', marginTop: 8 }}>
@@ -76,7 +89,9 @@ export default function LivePage() {
         Live Prices
       </h1>
       <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-        {SYMBOLS.map((s) => <PriceCard key={s} symbol={s} />)}
+        {SYMBOLS.map((s) => (
+          <PriceCard key={s} symbol={s} />
+        ))}
       </div>
       <p style={{ marginTop: 32, fontSize: 12, color: '#334155' }}>
         Binance Testnet · SSE stream via worker → Redis → API → browser

@@ -12,8 +12,6 @@
       "@quant/exchange": ["../../packages/exchange/src/index.ts"]
     }
   },
-  "references": [
-    { "path": "../../packages/exchange" }
-  ],
+  "references": [{ "path": "../../packages/exchange" }],
   "include": ["src/**/*.ts"]
 }

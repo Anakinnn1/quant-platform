@@ -40,8 +40,28 @@ jobs:
       - run: pnpm typecheck
 
   test:
-    name: Test
+    name: Test (E2E)
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: quant
+          POSTGRES_PASSWORD: quant
+          POSTGRES_DB: quant_platform_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    env:
+      DATABASE_URL: postgresql://quant:quant@localhost:5432/quant_platform_test
+      JWT_ACCESS_SECRET: ci-test-access-secret-change-in-prod
+      JWT_REFRESH_SECRET: ci-test-refresh-secret-change-in-prod
+      EXCHANGE_KEY_ENC_SECRET: ci-test-enc-secret-32-bytes-exactly!!
+      NODE_ENV: test
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -52,8 +72,9 @@ jobs:
           node-version: '20'
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
-      # TODO: replace with pnpm test once Phase 1+ adds test scripts
-      - run: echo "Tests will be added in Phase 1+"
+      - run: pnpm db:generate
+      - run: pnpm --filter @quant/shared db:push
+      - run: pnpm --filter @quant/api test:e2e
 
   audit:
     name: Security Audit

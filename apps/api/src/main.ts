@@ -1,2 +1,35 @@
-// Phase 1: NestJS application bootstrap (Auth + RBAC) goes here.
-export {};
+import 'reflect-metadata';
+import { NestFactory } from '@nestjs/core';
+import { UnprocessableEntityException, ValidationPipe } from '@nestjs/common';
+import helmet from 'helmet';
+import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { requestIdMiddleware } from './common/middleware/request-id.middleware';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  app.use(helmet());
+  app.use(requestIdMiddleware);
+  app.setGlobalPrefix('api/v1');
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      // Map validation errors to 422 per §10
+      exceptionFactory: (errors) => {
+        const message = errors.flatMap((e) => Object.values(e.constraints ?? {})).join('; ');
+        return new UnprocessableEntityException(message);
+      },
+    }),
+  );
+
+  app.useGlobalFilters(new HttpExceptionFilter());
+
+  const port = process.env.API_PORT ?? 3001;
+  await app.listen(port);
+}
+
+bootstrap();

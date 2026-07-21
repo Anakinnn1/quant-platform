@@ -60,7 +60,7 @@ export class IngestionService implements OnModuleInit, OnModuleDestroy {
     this.wsManager.subscribeKline(
       ticker,
       interval,
-      (kline) => this.onKline(symbolId, ticker, kline),
+      (kline: BinanceKlineTick) => this.onKline(symbolId, ticker, kline),
       () => this.backfill(symbolId, ticker, interval), // backfill on every reconnect
     );
   }

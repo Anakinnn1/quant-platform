@@ -1,6 +1,6 @@
 import WebSocket from 'ws';
-import { nextBackoff, initialBackoff } from './backoff.js';
-import type { BinanceKlineTick } from './types.js';
+import { nextBackoff, initialBackoff } from './backoff';
+import type { BinanceKlineTick } from './types';
 
 // Testnet-only: URL is a constant, not a parameter.
 const WS_BASE = 'wss://testnet.binance.vision/ws' as const;

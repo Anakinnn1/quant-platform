@@ -1,5 +1,5 @@
 import { createHmac } from 'crypto';
-import type { BinanceKlineTick } from './types.js';
+import type { BinanceKlineTick } from './types';
 
 // Testnet-only: URL is a constant, not a parameter — mainnet is structurally unreachable.
 const REST_BASE = 'https://testnet.binance.vision/api/v3' as const;

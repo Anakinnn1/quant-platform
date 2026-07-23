@@ -56,6 +56,9 @@ importers:
       '@quant/exchange':
         specifier: workspace:*
         version: link:../../packages/exchange
+      '@quant/risk':
+        specifier: workspace:*
+        version: link:../../packages/risk
       argon2:
         specifier: ^0.40.3
         version: 0.40.3

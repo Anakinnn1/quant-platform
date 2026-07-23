@@ -3,8 +3,10 @@ import { ConfigService } from '@nestjs/config';
 import { AnthropicAIProvider, GroqAIProvider, MockAIProvider } from '@quant/ai-engine';
 import { AI_PROVIDER, AIDecisionsService } from './ai-decisions.service';
 import { AIDecisionsController } from './ai-decisions.controller';
+import { PaperTradingModule } from '../paper-trading/paper-trading.module';
 
 @Module({
+  imports: [PaperTradingModule],
   providers: [
     {
       provide: AI_PROVIDER,

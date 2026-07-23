@@ -9,6 +9,8 @@ import { UsersModule } from './users/users.module';
 import { ExchangeModule } from './exchange/exchange.module';
 import { MarketDataModule } from './market-data/market-data.module';
 import { AIEngineModule } from './ai-engine/ai-engine.module';
+import { RiskModule } from './risk/risk.module';
+import { PaperTradingModule } from './paper-trading/paper-trading.module';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { AIEngineModule } from './ai-engine/ai-engine.module';
     ExchangeModule,
     MarketDataModule,
     AIEngineModule,
+    RiskModule,
+    PaperTradingModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

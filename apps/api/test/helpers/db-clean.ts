@@ -5,8 +5,9 @@ import type { PrismaService } from '../../src/common/prisma/prisma.service';
  * so each test starts with a clean slate, regardless of suite ordering.
  */
 export async function cleanDb(prisma: PrismaService): Promise<void> {
-  await prisma.aIDecision.deleteMany();
+  await prisma.riskEvaluation.deleteMany();
   await prisma.trade.deleteMany();
+  await prisma.aIDecision.deleteMany();
   await prisma.backtest.deleteMany();
   await prisma.strategy.deleteMany();
   await prisma.riskProfile.deleteMany();

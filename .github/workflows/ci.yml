@@ -37,6 +37,7 @@ jobs:
       - run: pnpm db:generate
       - run: pnpm --filter @quant/exchange build
       - run: pnpm --filter @quant/ai-engine build
+      - run: pnpm --filter @quant/risk build
       - run: pnpm typecheck
 
   test:
@@ -75,6 +76,7 @@ jobs:
       - run: pnpm --filter @quant/shared db:push
       - run: pnpm --filter @quant/exchange build
       - run: pnpm --filter @quant/ai-engine build
+      - run: pnpm --filter @quant/risk build
       - run: pnpm --filter @quant/api test:e2e
 
   audit:

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AnthropicAIProvider, MockAIProvider } from '@quant/ai-engine';
+import { AnthropicAIProvider, GroqAIProvider, MockAIProvider } from '@quant/ai-engine';
 import { AI_PROVIDER, AIDecisionsService } from './ai-decisions.service';
 import { AIDecisionsController } from './ai-decisions.controller';
 
@@ -10,8 +10,11 @@ import { AIDecisionsController } from './ai-decisions.controller';
       provide: AI_PROVIDER,
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
-        const apiKey = config.get<string>('ANTHROPIC_API_KEY');
-        return apiKey ? new AnthropicAIProvider(apiKey) : new MockAIProvider();
+        const groqKey = config.get<string>('GROQ_API_KEY');
+        if (groqKey) return new GroqAIProvider(groqKey);
+        const anthropicKey = config.get<string>('ANTHROPIC_API_KEY');
+        if (anthropicKey) return new AnthropicAIProvider(anthropicKey);
+        return new MockAIProvider();
       },
     },
     AIDecisionsService,

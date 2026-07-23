@@ -9,6 +9,7 @@ import { requestIdMiddleware } from '../src/common/middleware/request-id.middlew
 import { PrismaService } from '../src/common/prisma/prisma.service';
 import { EncryptionService } from '../src/common/encryption/encryption.service';
 import { BINANCE_CLIENT } from '../src/exchange/exchange.service';
+import { cleanDb } from './helpers/db-clean';
 
 const mockBinance = {
   getAccountBalance: jest.fn().mockResolvedValue([
@@ -66,9 +67,7 @@ describe('Exchange Keys (e2e)', () => {
   afterAll(() => app.close());
 
   beforeEach(async () => {
-    await prisma.exchangeKey.deleteMany();
-    await prisma.refreshToken.deleteMany();
-    await prisma.user.deleteMany();
+    await cleanDb(prisma);
 
     const reg = await request(server)
       .post('/api/v1/auth/register')

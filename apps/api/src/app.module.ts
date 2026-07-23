@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ExchangeModule } from './exchange/exchange.module';
 import { MarketDataModule } from './market-data/market-data.module';
+import { AIEngineModule } from './ai-engine/ai-engine.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { MarketDataModule } from './market-data/market-data.module';
     UsersModule,
     ExchangeModule,
     MarketDataModule,
+    AIEngineModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

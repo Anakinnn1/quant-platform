@@ -16,6 +16,7 @@
     "@nestjs/platform-express": "^11.0.0",
     "@nestjs/throttler": "^6.5.0",
     "@prisma/client": "^5.22.0",
+    "@quant/ai-engine": "workspace:*",
     "@quant/exchange": "workspace:*",
     "argon2": "^0.40.3",
     "class-transformer": "^0.5.1",

@@ -7,6 +7,7 @@ import { AppModule } from '../src/app.module';
 import { HttpExceptionFilter } from '../src/common/filters/http-exception.filter';
 import { PrismaService } from '../src/common/prisma/prisma.service';
 import { requestIdMiddleware } from '../src/common/middleware/request-id.middleware';
+import { cleanDb } from './helpers/db-clean';
 
 // Decode JWT payload without verifying signature (for assertions only)
 function decodeJwt(token: string): Record<string, unknown> {
@@ -57,9 +58,7 @@ describe('Auth + Users (e2e)', () => {
   });
 
   beforeEach(async () => {
-    await prisma.exchangeKey.deleteMany();
-    await prisma.refreshToken.deleteMany();
-    await prisma.user.deleteMany();
+    await cleanDb(prisma);
   });
 
   // ── helpers ────────────────────────────────────────────────────────────────

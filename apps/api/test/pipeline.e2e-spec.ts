@@ -12,7 +12,6 @@ import { HttpExceptionFilter } from '../src/common/filters/http-exception.filter
 import { requestIdMiddleware } from '../src/common/middleware/request-id.middleware';
 import { PrismaService } from '../src/common/prisma/prisma.service';
 import { AI_PROVIDER } from '../src/ai-engine/ai-decisions.service';
-import type { ApprovedEvaluation } from '../src/paper-trading/paper-trading.service';
 import { PaperTradingService } from '../src/paper-trading/paper-trading.service';
 import { cleanDb } from './helpers/db-clean';
 
